@@ -24,13 +24,31 @@ class S3Cache {
 		validateOption('secretKey')
 		validateOption('bucket')
 
-		this.s3 = new S3({
+		// Translate passed in params to S3 constructor params.
+		let constructorOptions = {
 			accessKeyId: this.options.accessKey,
 			secretAccessKey: this.options.secretKey,
 			params: {
 				Bucket: this.options.bucket,
 			},
-		})
+		}
+
+		// If s3Options is provided, merge it with our constructorOptions object.
+		if( 's3Options' in this.options ) {
+			if( typeof this.options.s3Options !== 'object' || this.options.s3Options === null ) {
+				throw new Error('Expected an object for s3Options!')
+			}
+
+			// If params is in the provided options object, manually merge them
+			// Otherwise this isn't a deep merge.
+			if( 'params' in this.options.s3Options ) {
+				this.options.s3Options.params = Object.assign(constructorOptions.params, this.options.s3Options.params)
+			}
+
+			Object.assign(constructorOptions, this.options.s3Options)
+		}
+
+		this.s3 = new S3(constructorOptions)
 	}
 
 	getPath(pathName) {
