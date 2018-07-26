@@ -29,6 +29,7 @@
   "dependencies": {
     "aws-sdk": "^2.22.0",
     "cache-manager": "^2.4.0",
+    "checksum": "^0.1.1",
     "moment": "^2.22.2"
   },
   "devDependencies": {
